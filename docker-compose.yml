@@ -23,13 +23,39 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: guised_up_app
+    ports:
+      - "8000:8000"
     volumes:
       - ./backend:/var/www/html
     tty: true
     stdin_open: true
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: guised_up
+      DB_USERNAME: guised_admin
+      DB_PASSWORD: guised_password
+      EMBEDDING_SERVICE_URL: http://embedding:8001
     depends_on:
       db:
         condition: service_healthy
+
+  embedding:
+    build:
+      context: ./embedding-service
+      dockerfile: Dockerfile
+    container_name: guised_up_embedding
+    ports:
+      - "8001:8001"
+    environment:
+      PYTHONUNBUFFERED: "1"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   pgdata:
