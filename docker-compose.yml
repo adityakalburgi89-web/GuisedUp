@@ -25,6 +25,8 @@ services:
     container_name: guised_up_app
     volumes:
       - ./backend:/var/www/html
+    tty: true
+    stdin_open: true
     depends_on:
       db:
         condition: service_healthy
