@@ -25,11 +25,13 @@ return new class extends Migration
             $table->index('created_at');
         });
 
-        // Add pgvector column of size 384 using raw SQL as instructed
-        DB::statement('ALTER TABLE posts ADD COLUMN embedding vector(384) NULL;');
-        
-        // Create HNSW index on the embedding vector column
-        DB::statement('CREATE INDEX posts_embedding_hnsw_idx ON posts USING hnsw (embedding vector_l2_ops);');
+        if (DB::getDriverName() === 'pgsql') {
+            // Add pgvector column of size 384 using raw SQL
+            DB::statement('ALTER TABLE posts ADD COLUMN embedding vector(384) NULL;');
+
+            // Create HNSW index on the embedding vector column
+            DB::statement('CREATE INDEX posts_embedding_hnsw_idx ON posts USING hnsw (embedding vector_l2_ops);');
+        }
     }
 
     /**
@@ -40,3 +42,4 @@ return new class extends Migration
         Schema::dropIfExists('posts');
     }
 };
+
