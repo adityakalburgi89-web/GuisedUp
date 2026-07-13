@@ -5,7 +5,7 @@ import { FeedScreen } from './src/screens/FeedScreen';
 export default function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <FeedScreen />
     </SafeAreaProvider>
   );

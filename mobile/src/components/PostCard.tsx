@@ -56,10 +56,12 @@ export function PostCard({ post, isLiked, isLiking, onLike }: PostCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.sm,
     marginHorizontal: spacing.md,
     marginBottom: spacing.md,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   header: {
     flexDirection: 'row',
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     ...typography.title,
-    color: colors.text,
+    color: '#ffffff',
     fontWeight: '700',
   },
   headerInfo: {
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     ...typography.tiny,
-    color: colors.primaryLight,
+    color: colors.text,
+    fontWeight: '600',
   },
 });

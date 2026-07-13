@@ -140,6 +140,13 @@ export function FeedScreen() {
         onClear={handleClear}
       />
 
+      {!isSearching && (
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitle}>EDITORIAL</Text>
+          <Text style={styles.headerSubTitle}>DISCOVERY</Text>
+        </View>
+      )}
+
       {isSearching && searchQuery.trim().length > 0 && (
         <Text style={styles.searchResultsHeader}>
           Search results for "{searchQuery}"
@@ -188,6 +195,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  headerTitleContainer: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    gap: 0,
+  },
+  headerTitle: {
+    fontSize: 48,
+    fontWeight: '800',
+    color: colors.text,
+    letterSpacing: -2.5,
+    lineHeight: 44,
+  },
+  headerSubTitle: {
+    fontSize: 48,
+    fontWeight: '800',
+    color: colors.text,
+    letterSpacing: -2.5,
+    lineHeight: 44,
+    opacity: 0.15,
   },
   searchWrapper: {
     paddingTop: spacing.sm,
