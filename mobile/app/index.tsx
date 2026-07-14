@@ -8,7 +8,7 @@ import {
   Keyboard,
   ScrollView,
 } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { useFeed, useSearch, useInteractions } from '../lib/hooks';
 import { AppLayout } from '../components/AppLayout';
 import { Header } from '../components/Header';
@@ -183,6 +183,7 @@ export default function Screen() {
       <Header 
         userName="Aditya"
         onNotificationsPress={() => console.log('Notifications pressed')}
+        onMessagePress={() => router.push('/chats' as any)}
       />
 
       {/* Main Feed Content */}

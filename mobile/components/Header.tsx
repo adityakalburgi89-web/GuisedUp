@@ -1,16 +1,18 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Bell, Search } from 'lucide-react-native';
+import { Bell, Search, MessageSquare } from 'lucide-react-native';
 
 interface HeaderProps {
   onSearchPress?: () => void;
   onNotificationsPress?: () => void;
+  onMessagePress?: () => void;
   userName?: string;
 }
 
 export function Header({
   onSearchPress,
   onNotificationsPress,
+  onMessagePress,
   userName = 'Friend',
 }: HeaderProps) {
   // Simple time-based greeting
@@ -31,13 +33,21 @@ export function Header({
           {userName}
         </Text>
       </View>
-      <View className="flex-row items-center gap-4">
+      <View className="flex-row items-center gap-4.5">
         {onSearchPress && (
           <TouchableOpacity 
             onPress={onSearchPress}
             className="w-10 h-10 items-center justify-center rounded-full bg-white border border-border shadow-sm active:opacity-70"
           >
             <Search size={20} color="#111827" />
+          </TouchableOpacity>
+        )}
+        {onMessagePress && (
+          <TouchableOpacity 
+            onPress={onMessagePress}
+            className="w-10 h-10 items-center justify-center rounded-full bg-white border border-border shadow-sm active:opacity-70"
+          >
+            <MessageSquare size={20} color="#111827" />
           </TouchableOpacity>
         )}
         <TouchableOpacity 
@@ -55,3 +65,4 @@ export function Header({
     </View>
   );
 }
+
