@@ -1,61 +1,59 @@
 import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
-import { Home, Search, Plus, Heart, User } from 'lucide-react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { Home, Clapperboard, Heart, LayoutGrid } from 'lucide-react-native';
+import { colors, shadows } from '../lib/tokens';
 
 interface BottomNavigationProps {
   activeTab: string;
   onTabPress: (tabName: string) => void;
 }
 
+const TABS = [
+  { name: 'home', icon: Home },
+  { name: 'reels', icon: Clapperboard },
+  { name: 'activity', icon: Heart },
+  { name: 'more', icon: LayoutGrid },
+] as const;
+
 export function BottomNavigation({
   activeTab,
   onTabPress,
 }: BottomNavigationProps) {
-  const tabs = [
-    { name: 'home', icon: Home, label: 'Home' },
-    { name: 'search', icon: Search, label: 'Search' },
-    { name: 'create', icon: Plus, label: 'Create', isSpecial: true },
-    { name: 'activity', icon: Heart, label: 'Activity' },
-    { name: 'profile', icon: User, label: 'Profile' },
-  ];
-
   return (
-    <View className="flex-row items-center justify-around h-16 bg-white border-t border-border/80 px-4 pb-2 shadow-lg">
-      {tabs.map((tab) => {
-        const IconComponent = tab.icon;
-        const isActive = activeTab === tab.name;
+    <View
+      pointerEvents="box-none"
+      className="absolute left-0 right-0 bottom-4 items-center"
+    >
+      <View
+        className="flex-row items-center justify-between bg-carbon rounded-full px-8 py-3.5"
+        style={[{ width: '78%', maxWidth: 320 }, shadows.nav]}
+      >
+        {TABS.map((tab) => {
+          const IconComponent = tab.icon;
+          const isActive = activeTab === tab.name;
 
-        if (tab.isSpecial) {
           return (
             <TouchableOpacity
               key={tab.name}
               onPress={() => onTabPress(tab.name)}
-              className="w-12 h-12 rounded-full bg-primary items-center justify-center -mt-6 shadow-md shadow-primary/30 active:opacity-90"
+              activeOpacity={0.7}
+              className="items-center justify-center w-11 h-11"
             >
-              <Plus size={24} color="#ffffff" strokeWidth={2.5} />
-            </TouchableOpacity>
-          );
-        }
-
-        return (
-          <TouchableOpacity
-            key={tab.name}
-            onPress={() => onTabPress(tab.name)}
-            className="items-center justify-center flex-1 py-1"
-          >
-            <View className={`items-center justify-center p-1.5 rounded-full ${isActive ? 'bg-primary/5' : ''}`}>
               <IconComponent
                 size={22}
-                color={isActive ? '#5B7FFF' : '#9CA3AF'}
-                strokeWidth={isActive ? 2.5 : 2}
+                color={isActive ? colors.paperWhite : 'rgba(255,255,255,0.35)'}
+                strokeWidth={isActive ? 2.4 : 1.8}
+                fill={isActive && tab.name === 'home' ? colors.paperWhite : 'transparent'}
               />
-            </View>
-            <Text className={`text-[10px] font-semibold mt-0.5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+              {isActive ? (
+                <View className="w-1 h-1 rounded-full bg-lavender mt-1" />
+              ) : (
+                <View className="h-1 mt-1" />
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 }

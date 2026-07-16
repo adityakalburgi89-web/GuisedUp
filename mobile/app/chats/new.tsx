@@ -5,125 +5,240 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  StyleSheet,
 } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { ArrowLeft, Users, UserPlus, Search } from 'lucide-react-native';
-import { AppLayout } from '../../components/AppLayout';
+import { ArrowLeft, Search, UserPlus, Users } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Contact {
   id: string;
   name: string;
-  avatar: string;
+  initials: string;
+  color: string;
   status: string;
 }
 
-export default function NewChatScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
+const CONTACTS: Contact[] = [
+  { id: 'emma', name: 'Emma Watson', initials: 'EW', color: '#FF6B6B', status: 'Available' },
+  { id: 'lucas', name: 'Lucas Chen', initials: 'LC', color: '#4ECDC4', status: 'Busy' },
+  { id: 'mia', name: 'Mia Wong', initials: 'MW', color: '#45B7D1', status: 'Available' },
+  { id: 'oliver', name: 'Oliver Park', initials: 'OP', color: '#FECA57', status: 'Offline' },
+  { id: 'sophie', name: 'Sophie Turner', initials: 'ST', color: '#FF9FF3', status: 'Available' },
+];
 
-  const suggestedContacts: Contact[] = [
-    { id: 'emma', name: 'Emma Watson', avatar: 'E', status: 'Online' },
-    { id: 'lucas', name: 'Lucas Chen', avatar: 'L', status: 'Online' },
-    { id: 'mia', name: 'Mia Wong', avatar: 'M', status: 'Online' },
-    { id: 'oliver', name: 'Oliver Smith', avatar: 'O', status: 'Offline' },
-  ];
+export default function NewMessageScreen() {
+  const [search, setSearch] = useState('');
 
-  const filteredContacts = suggestedContacts.filter((c) =>
-    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filtered = CONTACTS.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const renderContactItem = ({ item }: { item: Contact }) => (
+  const renderContact = ({ item }: { item: Contact }) => (
     <TouchableOpacity
+      style={styles.contactRow}
       onPress={() => router.push(`/chats/${item.id}` as any)}
-      className="flex-row items-center px-6 py-4 border-b border-border/40 active:bg-gray-50/80 bg-white"
+      activeOpacity={0.7}
     >
-      <View className="w-10 h-10 rounded-full bg-secondary/15 items-center justify-center">
-        <Text className="text-sm font-bold text-secondary">{item.avatar}</Text>
+      <View style={[styles.avatar, { backgroundColor: item.color + '25' }]}>
+        <Text style={[styles.avatarText, { color: item.color }]}>{item.initials}</Text>
       </View>
-      <View className="ml-4 flex-1">
-        <Text className="text-sm font-bold text-foreground" style={{ fontFamily: 'Inter_700Bold' }}>
-          {item.name}
-        </Text>
-        <Text className="text-xs text-muted-foreground mt-0.5">{item.status}</Text>
+      <View style={styles.contactInfo}>
+        <Text style={styles.contactName}>{item.name}</Text>
+        <Text style={styles.contactStatus}>{item.status}</Text>
       </View>
+      <View style={[
+        styles.statusDot,
+        { backgroundColor: item.status === 'Available' ? '#33c758' : item.status === 'Busy' ? '#FF6B6B' : '#999999' }
+      ]} />
     </TouchableOpacity>
   );
 
   return (
-    <AppLayout>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Header */}
-      <View className="flex-row items-center justify-between px-6 py-4 bg-white border-b border-border/40">
-        <View className="flex-row items-center gap-3">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center rounded-full border border-border shadow-sm active:opacity-70 bg-white"
-          >
-            <ArrowLeft size={20} color="#111827" />
-          </TouchableOpacity>
-          <Text className="text-xl font-bold text-foreground" style={{ fontFamily: 'Inter_700Bold' }}>
-            New Message
-          </Text>
-        </View>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.iconBtn}>
+          <ArrowLeft size={20} color="#181925" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>New Message</Text>
+        <View style={{ width: 40 }} />
       </View>
 
-      {/* Search Input (To: Name or Number) */}
-      <View className="px-6 py-3.5 bg-white border-b border-border/40">
-        <View className="flex-row items-center bg-gray-50 border border-border px-4 py-2.5 rounded-full">
-          <Search size={18} color="#9CA3AF" />
-          <TextInput
-            placeholder="To: Name or Number"
-            placeholderTextColor="#9CA3AF"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            className="flex-1 ml-2 text-sm text-foreground pr-2 font-medium"
-            style={{ padding: 0 }}
-          />
-        </View>
+      {/* To: input */}
+      <View style={styles.toWrap}>
+        <Text style={styles.toLabel}>To:</Text>
+        <TextInput
+          placeholder="Name or number..."
+          placeholderTextColor="#999999"
+          value={search}
+          onChangeText={setSearch}
+          style={styles.toInput}
+          autoFocus
+        />
       </View>
 
       {/* Action Buttons */}
-      <View className="bg-white">
-        <TouchableOpacity
-          onPress={() => console.log('Create new group pressed')}
-          className="flex-row items-center px-6 py-4 border-b border-border/40 active:bg-gray-50/80"
-        >
-          <View className="w-10 h-10 rounded-full bg-primary/10 items-center justify-center">
-            <Users size={18} color="#5B7FFF" />
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.actionBtn}>
+          <View style={[styles.actionIcon, { backgroundColor: '#918df620' }]}>
+            <Users size={18} color="#918df6" />
           </View>
-          <Text className="ml-4 text-sm font-bold text-foreground">
-            Create New Group
-          </Text>
+          <Text style={styles.actionText}>Create New Group</Text>
+          <Text style={styles.actionArrow}>›</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => console.log('Add new contact pressed')}
-          className="flex-row items-center px-6 py-4 border-b border-border/40 active:bg-gray-50/80"
-        >
-          <View className="w-10 h-10 rounded-full bg-primary/10 items-center justify-center">
-            <UserPlus size={18} color="#5B7FFF" />
+        <View style={styles.divider} />
+        <TouchableOpacity style={styles.actionBtn}>
+          <View style={[styles.actionIcon, { backgroundColor: '#4ECDC420' }]}>
+            <UserPlus size={18} color="#4ECDC4" />
           </View>
-          <Text className="ml-4 text-sm font-bold text-foreground">
-            Add New Contact
-          </Text>
+          <Text style={styles.actionText}>Add New Contact</Text>
+          <Text style={styles.actionArrow}>›</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Suggested Header */}
-      <View className="px-6 py-3 bg-gray-50">
-        <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
-          Suggested
-        </Text>
-      </View>
-
-      {/* Contact List */}
+      {/* Contacts */}
+      <Text style={styles.sectionLabel}>Suggested</Text>
       <FlatList
-        data={filteredContacts}
-        renderItem={renderContactItem}
+        data={filtered}
+        renderItem={renderContact}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: '#FFFFFF' }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 24 }}
       />
-    </AppLayout>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#181925',
+  },
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  toWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#e8e8e8',
+    gap: 12,
+  },
+  toLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#918df6',
+  },
+  toInput: {
+    flex: 1,
+    fontSize: 15,
+    color: '#181925',
+    padding: 0,
+  },
+  actions: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  actionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 14,
+  },
+  actionIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#181925',
+  },
+  actionArrow: {
+    fontSize: 20,
+    color: '#999999',
+    fontWeight: '400',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e8e8e8',
+    marginLeft: 66,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#999999',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    paddingHorizontal: 20,
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    gap: 14,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  contactInfo: {
+    flex: 1,
+  },
+  contactName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#181925',
+    marginBottom: 2,
+  },
+  contactStatus: {
+    fontSize: 13,
+    color: '#999999',
+  },
+  statusDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+});

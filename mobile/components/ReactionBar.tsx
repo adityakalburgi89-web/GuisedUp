@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
-import { View, Text, TouchableWithoutFeedback, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Animated } from 'react-native';
 import { Heart, MessageSquare, Send, Bookmark } from 'lucide-react-native';
+import { colors } from '../lib/tokens';
 
 interface ReactionBarProps {
   count: number;
@@ -46,58 +47,63 @@ export function ReactionBar({
   };
 
   return (
-    <View className="flex-row items-center justify-between mt-4 pt-3 border-t border-border/40">
-      <View className="flex-row items-center gap-6">
+    <View className="flex-row items-center justify-between mt-4 pt-3 border-t border-border">
+      <View className="flex-row items-center gap-5">
         <TouchableWithoutFeedback
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           onPress={onLikePress}
           disabled={isLoading}
         >
-          <Animated.View 
-            className="flex-row items-center gap-1.5 py-1 pr-2 active:opacity-75"
+          <Animated.View
+            className="flex-row items-center gap-1.5 py-1"
             style={{ transform: [{ scale }] }}
           >
-            <Heart 
-              size={20} 
-              color={isLiked ? '#EF4444' : '#6B7280'} 
-              fill={isLiked ? '#EF4444' : 'transparent'} 
+            <Heart
+              size={20}
+              color={isLiked ? colors.ember : colors.graphite}
+              fill={isLiked ? colors.ember : 'transparent'}
             />
-            <Text className={`text-xs font-semibold ${isLiked ? 'text-destructive' : 'text-muted-foreground'}`}>
+            <Text
+              className={`text-xs ${isLiked ? 'text-ember' : 'text-graphite'}`}
+              style={{ fontFamily: 'DMSans_500Medium', letterSpacing: -0.2 }}
+            >
               {count}
             </Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={onCommentPress}
-          className="flex-row items-center gap-1.5 py-1 pr-2 active:opacity-75"
+          className="flex-row items-center gap-1.5 py-1 active:opacity-75"
         >
-          <MessageSquare size={20} color="#6B7280" />
-          <Text className="text-xs font-semibold text-muted-foreground">Comment</Text>
+          <MessageSquare size={20} color={colors.graphite} />
+          <Text
+            className="text-xs text-graphite"
+            style={{ fontFamily: 'DMSans_500Medium' }}
+          >
+            Comment
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={onSharePress}
-          className="flex-row items-center gap-1.5 py-1 pr-2 active:opacity-75"
+          className="py-1 active:opacity-75"
         >
-          <Send size={20} color="#6B7280" />
+          <Send size={20} color={colors.graphite} />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         onPress={onBookmarkPress}
-        className="py-1 pl-2 active:opacity-75"
+        className="py-1 active:opacity-75"
       >
-        <Bookmark 
-          size={20} 
-          color={isBookmarked ? '#7C5CFF' : '#6B7280'} 
-          fill={isBookmarked ? '#7C5CFF' : 'transparent'} 
+        <Bookmark
+          size={20}
+          color={isBookmarked ? colors.lavender : colors.graphite}
+          fill={isBookmarked ? colors.lavender : 'transparent'}
         />
       </TouchableOpacity>
     </View>
   );
 }
-
-// Simple TouchableOpacity implementation inside ReactionBar scope
-import { TouchableOpacity } from 'react-native';

@@ -1,19 +1,22 @@
 import React from 'react';
-import { TouchableOpacity, Animated } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Plus } from 'lucide-react-native';
+import { colors, shadows } from '../lib/tokens';
 
 interface FloatingActionButtonProps {
   onPress: () => void;
 }
 
+/** Kept for create flows — soft lavender pill CTA matching Visitors. */
 export function FloatingActionButton({ onPress }: FloatingActionButtonProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="absolute bottom-6 right-6 w-14 h-14 bg-primary rounded-full items-center justify-center shadow-lg shadow-primary/40 active:scale-95"
-      style={{ elevation: 5 }}
+      activeOpacity={0.9}
+      className="absolute bottom-28 right-6 w-14 h-14 bg-lavender rounded-full items-center justify-center"
+      style={shadows.subtle}
     >
-      <Plus size={28} color="#ffffff" strokeWidth={2.5} />
+      <Plus size={26} color={colors.paperWhite} strokeWidth={2.4} />
     </TouchableOpacity>
   );
 }

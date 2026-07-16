@@ -4,51 +4,66 @@
 
 @layer base {
   :root {
-    --background: 220 18% 97.8%;      /* #F8F9FB */
-    --foreground: 222 47% 11.2%;      /* #111827 */
-    --card: 0 0% 100%;                /* #FFFFFF */
-    --card-foreground: 222 47% 11.2%; /* #111827 */
+    /* Visitors — white engineering blueprint */
+    --background: 0 0% 100%;            /* Paper White #ffffff */
+    --foreground: 234 21% 12%;          /* Carbon #181925 */
+    --card: 0 0% 100%;                  /* Paper White */
+    --card-foreground: 234 21% 12%;     /* Carbon */
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11.2%;
-    --primary: 227 100% 68%;          /* #5B7FFF */
-    --primary-foreground: 0 0% 100%;  /* #FFFFFF */
-    --secondary: 252 100% 68%;        /* #7C5CFF */
-    --secondary-foreground: 0 0% 100%;/* #FFFFFF */
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 47%;  /* #6B7280 */
-    --accent: 220 14% 96%;
-    --accent-foreground: 222 47% 11.2%;
-    --destructive: 0 84.2% 60.2%;     /* #EF4444 */
-    --border: 220 14% 91%;            /* #E5E7EB */
-    --input: 220 14% 91%;
-    --ring: 227 100% 68%;
-    --radius: 1.25rem;                 /* 20px (matches 16-24px design rule) */
-    --success: 145 63% 49%;           /* #2ECC71 */
+    --popover-foreground: 234 21% 12%;
+    --primary: 242 86% 76%;             /* Lavender #918df6 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;              /* Mist #f5f5f5 */
+    --secondary-foreground: 234 21% 12%;
+    --muted: 0 0% 96%;                  /* Mist */
+    --muted-foreground: 0 0% 60%;       /* Ash #999999 */
+    --accent: 0 0% 98%;                 /* Linen #fafafa */
+    --accent-foreground: 234 21% 12%;
+    --destructive: 15 100% 50%;         /* Ember #ff3e00 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 91%;                 /* Fog #e8e8e8 */
+    --input: 0 0% 91%;
+    --ring: 242 86% 76%;                /* Lavender */
+    --radius: 1rem;                     /* 16px cards */
+    --success: 135 59% 49%;             /* Mint #33c758 */
+
+    /* Named Visitors tokens (for direct use) */
+    --color-carbon: 234 21% 12%;
+    --color-paper-white: 0 0% 100%;
+    --color-linen: 0 0% 98%;
+    --color-mist: 0 0% 96%;
+    --color-fog: 0 0% 91%;
+    --color-ash: 0 0% 60%;
+    --color-graphite: 0 0% 40%;
+    --color-lavender: 242 86% 76%;
+    --color-iris: 250 100% 75%;
+    --color-mint: 135 59% 49%;
+    --color-mint-wash: 140 56% 92%;
+    --color-amber: 39 100% 50%;
+    --color-sky: 217 97% 58%;
+    --color-magenta: 322 65% 55%;
+    --color-ember: 15 100% 50%;
   }
 
   .dark:root {
-    --background: 0 0% 3.9%;
+    --background: 234 21% 8%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 234 21% 10%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 234 21% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+    --primary: 242 86% 76%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 234 12% 16%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --muted: 234 12% 16%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 234 12% 14%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 70.9% 59.4%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 300 0% 45%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --destructive: 15 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 234 10% 20%;
+    --input: 234 10% 20%;
+    --ring: 242 86% 76%;
   }
 }

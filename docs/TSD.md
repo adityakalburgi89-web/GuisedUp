@@ -460,9 +460,7 @@ docker compose down -v && docker compose up -d
 5. **Feed caching** — Redis-backed materialized feed to avoid recomputing ranking on every request
 6. **Rate limiting** — Per-user rate limits on post creation and interactions
 7. **Full-text search** — PostgreSQL `tsvector` + GIN index for better text search than ILIKE
-8. **A/B testing framework** — Compare ranking algorithm variants with user engagement metrics
-9. **GraphQL API** — For more efficient mobile data fetching (fewer round trips)
-10. **Offline-first mobile** — SQLite local cache with background sync
+8. **A/B testing framework** — Compare ranking algorithm variants with user engagement metricse with background sync
 
 ---
 

@@ -6,15 +6,17 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { ArrowLeft, Edit, Search, MessageSquare } from 'lucide-react-native';
-import { AppLayout } from '../../components/AppLayout';
+import { ArrowLeft, Edit, Search, MessageSquarePlus } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ChatThread {
   id: string;
   name: string;
-  avatar: string;
+  initials: string;
+  color: string;
   lastMessage: string;
   time: string;
   unreadCount: number;
@@ -22,103 +24,88 @@ interface ChatThread {
   isGroup?: boolean;
 }
 
+const THREADS: ChatThread[] = [
+  {
+    id: 'emma',
+    name: 'Emma Watson',
+    initials: 'EW',
+    color: '#FF6B6B',
+    lastMessage: 'Are we still on for coffee later? ☕️',
+    time: '9:41 AM',
+    unreadCount: 2,
+    isOnline: true,
+  },
+  {
+    id: 'lucas',
+    name: 'Lucas Chen',
+    initials: 'LC',
+    color: '#4ECDC4',
+    lastMessage: 'Check out this new track I found! 🎵',
+    time: 'Yesterday',
+    unreadCount: 1,
+    isOnline: true,
+  },
+  {
+    id: 'mia',
+    name: 'Mia Wong',
+    initials: 'MW',
+    color: '#45B7D1',
+    lastMessage: 'Thanks for the help yesterday! Really appreciate it.',
+    time: 'Mon',
+    unreadCount: 0,
+    isOnline: true,
+  },
+  {
+    id: 'weekend',
+    name: 'Weekend Getaway 🌴',
+    initials: 'WG',
+    color: '#96CEB4',
+    lastMessage: 'Oliver: Should we book the Airbnb now?',
+    time: 'Sun',
+    unreadCount: 3,
+    isOnline: false,
+    isGroup: true,
+  },
+];
+
 export default function ChatsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock Active Chat Threads matching the Figma Community Messaging Kit
-  const initialThreads: ChatThread[] = [
-    {
-      id: 'emma',
-      name: 'Emma Watson',
-      avatar: 'E',
-      lastMessage: 'Are we still on for coffee later? ☕️',
-      time: '9:41 AM',
-      unreadCount: 2,
-      isOnline: true,
-    },
-    {
-      id: 'lucas',
-      name: 'Lucas Chen',
-      avatar: 'L',
-      lastMessage: 'Check out this new track I found! 🎵',
-      time: 'Yesterday',
-      unreadCount: 1,
-      isOnline: true,
-    },
-    {
-      id: 'mia',
-      name: 'Mia Wong',
-      avatar: 'M',
-      lastMessage: 'Thanks for the help yesterday! Really appreciate it.',
-      time: 'Mon',
-      unreadCount: 0,
-      isOnline: true,
-    },
-    {
-      id: 'weekend',
-      name: 'Weekend Getaway 🌴',
-      avatar: 'W',
-      lastMessage: 'Oliver: Should we book the Airbnb now?',
-      time: 'Sun',
-      unreadCount: 3,
-      isOnline: false,
-      isGroup: true,
-    },
-  ];
-
-  const [threads] = useState<ChatThread[]>(initialThreads);
-
-  const filteredThreads = threads.filter(
+  const filtered = THREADS.filter(
     (t) =>
       t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const activeFriends = threads.filter((t) => t.isOnline);
+  const activeNow = THREADS.filter((t) => t.isOnline);
 
-  const renderThreadItem = ({ item }: { item: ChatThread }) => (
+  const renderThread = ({ item }: { item: ChatThread }) => (
     <TouchableOpacity
+      style={styles.threadRow}
       onPress={() => router.push(`/chats/${item.id}` as any)}
-      className="flex-row items-center px-6 py-3.5 border-b border-border/40 active:bg-gray-50/80 bg-white"
+      activeOpacity={0.7}
     >
-      {/* Avatar Container */}
-      <View className="relative">
-        <View className={`w-12 h-12 rounded-full items-center justify-center ${item.isGroup ? 'bg-primary/10' : 'bg-secondary/15'}`}>
-          <Text className={`text-base font-bold ${item.isGroup ? 'text-primary' : 'text-secondary'}`}>
-            {item.avatar}
-          </Text>
+      <View style={styles.avatarWrap}>
+        <View style={[styles.avatar, { backgroundColor: item.color + '25' }]}>
+          <Text style={[styles.avatarText, { color: item.color }]}>{item.initials}</Text>
         </View>
-        
-        {/* Active green dot */}
-        {item.isOnline && (
-          <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white" />
-        )}
+        {item.isOnline && <View style={styles.onlineDot} />}
       </View>
 
-      {/* Core Message Text */}
-      <View className="flex-1 ml-4 pr-2">
-        <View className="flex-row items-center justify-between">
-          <Text className="text-sm font-bold text-foreground" style={{ fontFamily: 'Inter_700Bold' }}>
-            {item.name}
-          </Text>
-          <Text className={`text-xs ${item.unreadCount > 0 ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
+      <View style={styles.threadInfo}>
+        <View style={styles.threadTop}>
+          <Text style={styles.threadName} numberOfLines={1}>{item.name}</Text>
+          <Text style={[styles.threadTime, item.unreadCount > 0 && styles.threadTimeActive]}>
             {item.time}
           </Text>
         </View>
-        
-        <View className="flex-row items-center justify-between mt-1">
-          <Text 
-            className={`text-xs flex-1 mr-4 ${item.unreadCount > 0 ? 'text-foreground font-semibold' : 'text-muted-foreground'}`}
-            numberOfLines={1}
-          >
+        <View style={styles.threadBottom}>
+          <Text style={[styles.threadPreview, item.unreadCount > 0 && styles.threadPreviewBold]} numberOfLines={1}>
             {item.lastMessage}
           </Text>
-          
           {item.unreadCount > 0 && (
-            <View className="bg-primary rounded-full min-w-[18px] h-[18px] px-1 items-center justify-center">
-              <Text className="text-[10px] font-bold text-white leading-[10px]">
-                {item.unreadCount}
-              </Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{item.unreadCount}</Text>
             </View>
           )}
         </View>
@@ -127,96 +114,261 @@ export default function ChatsScreen() {
   );
 
   return (
-    <AppLayout>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Custom Header */}
-      <View className="flex-row items-center justify-between px-6 py-4 bg-white border-b border-border/40">
-        <View className="flex-row items-center gap-3">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center rounded-full border border-border shadow-sm active:opacity-70 bg-white"
-          >
-            <ArrowLeft size={20} color="#111827" />
-          </TouchableOpacity>
-          <Text className="text-xl font-bold text-foreground" style={{ fontFamily: 'Inter_700Bold' }}>
-            Chats
-          </Text>
-        </View>
-
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.iconBtn}>
+          <ArrowLeft size={20} color="#181925" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Messages</Text>
         <TouchableOpacity
-          onPress={() => router.push('/chats/new')}
-          className="w-10 h-10 items-center justify-center rounded-full border border-border shadow-sm active:opacity-70 bg-white"
+          onPress={() => router.push('/chats/new' as any)}
+          style={styles.iconBtn}
         >
-          <Edit size={18} color="#111827" />
+          <MessageSquarePlus size={20} color="#918df6" />
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <View className="px-6 py-3 bg-white">
-        <View className="flex-row items-center bg-gray-50 border border-border px-4 py-2.5 rounded-full">
-          <Search size={18} color="#9CA3AF" />
+      {/* Search */}
+      <View style={styles.searchWrap}>
+        <View style={styles.searchBar}>
+          <Search size={16} color="#999999" />
           <TextInput
-            placeholder="Search chats"
-            placeholderTextColor="#9CA3AF"
+            placeholder="Search messages..."
+            placeholderTextColor="#999999"
             value={searchQuery}
             onChangeText={setSearchQuery}
-            className="flex-1 ml-2 text-sm text-foreground pr-2 font-medium"
-            style={{ padding: 0 }}
+            style={styles.searchInput}
           />
         </View>
       </View>
 
-      {/* Online List */}
-      {!searchQuery && activeFriends.length > 0 && (
-        <View className="bg-white border-b border-border/40 pb-4">
-          <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest px-6 mb-3">
-            Active Now
-          </Text>
+      {/* Active Now */}
+      {!searchQuery && activeNow.length > 0 && (
+        <View>
+          <Text style={styles.sectionLabel}>Active Now</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 24, gap: 16 }}
+            contentContainerStyle={styles.activeList}
           >
-            {activeFriends.map((friend) => (
+            {activeNow.map((friend) => (
               <TouchableOpacity
                 key={friend.id}
+                style={styles.activeItem}
                 onPress={() => router.push(`/chats/${friend.id}` as any)}
-                className="items-center"
               >
-                <View className="relative">
-                  <View className="w-14 h-14 rounded-full bg-secondary/15 items-center justify-center border border-border/40">
-                    <Text className="text-base font-bold text-secondary">
-                      {friend.avatar}
+                <View style={styles.activeAvatarWrap}>
+                  <View style={[styles.activeAvatar, { backgroundColor: friend.color + '25' }]}>
+                    <Text style={[styles.activeAvatarText, { color: friend.color }]}>
+                      {friend.initials}
                     </Text>
                   </View>
-                  <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white" />
+                  <View style={styles.activeOnlineDot} />
                 </View>
-                <Text className="text-xs font-semibold text-foreground mt-1.5">
-                  {friend.name.split(' ')[0]}
-                </Text>
+                <Text style={styles.activeName}>{friend.name.split(' ')[0]}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
       )}
 
-      {/* Thread list */}
+      {/* Divider */}
+      <Text style={styles.sectionLabel}>Recent</Text>
+
+      {/* Thread List */}
       <FlatList
-        data={filteredThreads}
-        renderItem={renderThreadItem}
+        data={filtered}
+        renderItem={renderThread}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: '#FFFFFF' }}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <View className="flex-1 items-center justify-center p-8">
-            <MessageSquare size={48} color="#9CA3AF" strokeWidth={1.5} />
-            <Text className="text-sm font-semibold text-muted-foreground mt-4 text-center">
-              No conversations found.
-            </Text>
-          </View>
-        }
+        contentContainerStyle={{ paddingBottom: 24 }}
       />
-    </AppLayout>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#181925',
+    letterSpacing: -0.3,
+  },
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchWrap: {
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#181925',
+    padding: 0,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#999999',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    paddingHorizontal: 20,
+    marginBottom: 12,
+    marginTop: 4,
+  },
+  activeList: {
+    paddingHorizontal: 20,
+    gap: 20,
+    paddingBottom: 16,
+  },
+  activeItem: {
+    alignItems: 'center',
+    gap: 6,
+  },
+  activeAvatarWrap: {
+    position: 'relative',
+  },
+  activeAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeAvatarText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  activeOnlineDot: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#33c758',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  activeName: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#181925',
+  },
+  threadRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  avatarWrap: {
+    position: 'relative',
+  },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  onlineDot: {
+    position: 'absolute',
+    bottom: 1,
+    right: 1,
+    width: 13,
+    height: 13,
+    borderRadius: 6.5,
+    backgroundColor: '#33c758',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  threadInfo: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  threadTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  threadName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#181925',
+    flex: 1,
+    marginRight: 8,
+  },
+  threadTime: {
+    fontSize: 12,
+    color: '#999999',
+    fontWeight: '500',
+  },
+  threadTimeActive: {
+    color: '#918df6',
+    fontWeight: '600',
+  },
+  threadBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  threadPreview: {
+    fontSize: 13,
+    color: '#999999',
+    flex: 1,
+    marginRight: 8,
+    fontWeight: '400',
+  },
+  threadPreviewBold: {
+    color: '#181925',
+    fontWeight: '500',
+  },
+  badge: {
+    backgroundColor: '#918df6',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+});
